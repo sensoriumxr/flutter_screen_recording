@@ -3,6 +3,7 @@ package com.isvisoft.flutter_screen_recording
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Point
 import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
 import android.media.MediaRecorder
@@ -13,7 +14,6 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.WindowManager
 import androidx.core.app.ActivityCompat
-import io.flutter.app.FlutterApplication
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -22,13 +22,12 @@ import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.io.File
 import java.io.IOException
-import android.graphics.Point
 
 
 class FlutterScreenRecordingPlugin(
-        private val registrar: Registrar
+    private val registrar: Registrar
 ) : MethodCallHandler,
-        PluginRegistry.ActivityResultListener {
+    PluginRegistry.ActivityResultListener {
 
     var mScreenDensity: Int = 0
     var mMediaRecorder: MediaRecorder? = null
@@ -38,7 +37,8 @@ class FlutterScreenRecordingPlugin(
     var mVirtualDisplay: VirtualDisplay? = null
     var mDisplayWidth: Int = 1280
     var mDisplayHeight: Int = 720
-    var storePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).absolutePath + File.separator
+    var storePath =
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).absolutePath + File.separator
     var videoName: String? = ""
     var recordAudio: Boolean? = false;
     private val SCREEN_RECORD_REQUEST_CODE = 333
@@ -49,22 +49,33 @@ class FlutterScreenRecordingPlugin(
     companion object {
         @JvmStatic
         fun registerWith(registrar: Registrar) {
-            val channel = MethodChannel(registrar.messenger(), "flutter_screen_recording")
+            val channel =
+                MethodChannel(registrar.messenger(), "flutter_screen_recording")
             val plugin = FlutterScreenRecordingPlugin(registrar)
             channel.setMethodCallHandler(plugin)
             registrar.addActivityResultListener(plugin)
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ): Boolean {
 
         if (requestCode == SCREEN_RECORD_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 //initMediaRecorder();
 
                 mMediaProjectionCallback = MediaProjectionCallback()
-                mMediaProjection = mProjectionManager?.getMediaProjection(resultCode, data)
-                mMediaProjection?.registerCallback(mMediaProjectionCallback, null)
+                mMediaProjection = mProjectionManager?.getMediaProjection(
+                    resultCode,
+                    data!!
+                )
+                mMediaProjection?.registerCallback(
+                    mMediaProjectionCallback,
+                    null
+                )
                 mVirtualDisplay = createVirtualDisplay()
                 _result.success(true)
                 return true
@@ -82,7 +93,10 @@ class FlutterScreenRecordingPlugin(
                 _result = result
                 mMediaRecorder = MediaRecorder()
 
-                mProjectionManager = registrar.context().applicationContext.getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager?
+                mProjectionManager =
+                    registrar.context().applicationContext.getSystemService(
+                        Context.MEDIA_PROJECTION_SERVICE
+                    ) as MediaProjectionManager?
 
                 videoName = call.argument<String?>("name")
                 recordAudio = call.argument<Boolean?>("audio")
@@ -114,7 +128,8 @@ class FlutterScreenRecordingPlugin(
 
     fun calculeResolution(screenSize: Point) {
 
-        val screenRatio: Double = (screenSize.x.toDouble() / screenSize.y.toDouble())
+        val screenRatio: Double =
+            (screenSize.x.toDouble() / screenSize.y.toDouble())
 
         println(screenSize.x.toString() + " --- " + screenSize.y.toString())
         var height: Double = mDisplayWidth / screenRatio;
@@ -168,13 +183,18 @@ class FlutterScreenRecordingPlugin(
 
         } catch (e: IOException) {
             println("ERR");
-            Log.d("--INIT-RECORDER", e.message)
+            Log.d("--INIT-RECORDER", e.message!!)
             println("Error startRecordScreen")
             println(e.message)
         }
 
         val permissionIntent = mProjectionManager?.createScreenCaptureIntent()
-        ActivityCompat.startActivityForResult(registrar.activity(), permissionIntent!!, SCREEN_RECORD_REQUEST_CODE, null)
+        ActivityCompat.startActivityForResult(
+            registrar.activity(),
+            permissionIntent!!,
+            SCREEN_RECORD_REQUEST_CODE,
+            null
+        )
 
     }
 
@@ -186,7 +206,7 @@ class FlutterScreenRecordingPlugin(
             println("stopRecordScreen success")
 
         } catch (e: Exception) {
-            Log.d("--INIT-RECORDER", e.message)
+            Log.d("--INIT-RECORDER", e.message!!)
             println("stopRecordScreen error")
             println(e.message)
 
@@ -196,7 +216,8 @@ class FlutterScreenRecordingPlugin(
     }
 
     private fun createVirtualDisplay(): VirtualDisplay? {
-        val windowManager = registrar.context().applicationContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val windowManager =
+            registrar.context().applicationContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val metrics: DisplayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(metrics)
         val screenSize = Point()
@@ -207,8 +228,16 @@ class FlutterScreenRecordingPlugin(
         println("msurface " + mMediaRecorder?.getSurface())
         println("aaa" + mDisplayWidth.toString() + " " + mDisplayHeight);
 
-        return mMediaProjection?.createVirtualDisplay("MainActivity", mDisplayWidth, mDisplayHeight, mScreenDensity,
-                DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, mMediaRecorder?.getSurface(), null, null)
+        return mMediaProjection?.createVirtualDisplay(
+            "MainActivity",
+            mDisplayWidth,
+            mDisplayHeight,
+            mScreenDensity,
+            DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
+            mMediaRecorder?.getSurface(),
+            null,
+            null
+        )
     }
 
     private fun stopScreenSharing() {
