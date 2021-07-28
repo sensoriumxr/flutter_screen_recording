@@ -25,7 +25,7 @@ import java.io.IOException
 
 
 class FlutterScreenRecordingPlugin(
-    private val registrar: Registrar
+    val registrar: Registrar
 ) : MethodCallHandler,
     PluginRegistry.ActivityResultListener {
 
