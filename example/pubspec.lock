@@ -75,7 +75,7 @@ packages:
       name: flutter_foreground_plugin
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.1"
+    version: "0.8.0"
   flutter_screen_recording:
     dependency: "direct dev"
     description:
@@ -122,28 +122,28 @@ packages:
       name: permission_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.4.0+hotfix.4"
+    version: "8.1.4+2"
   permission_handler_platform_interface:
     dependency: transitive
     description:
       name: permission_handler_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "3.6.1"
   plugin_platform_interface:
     dependency: transitive
     description:
       name: plugin_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.3"
+    version: "2.0.1"
   quiver:
     dependency: "direct dev"
     description:
       name: quiver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.5"
+    version: "3.0.1"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -207,4 +207,4 @@ packages:
     version: "2.1.0"
 sdks:
   dart: ">=2.12.0 <3.0.0"
-  flutter: ">=1.12.8"
+  flutter: ">=2.0.0"

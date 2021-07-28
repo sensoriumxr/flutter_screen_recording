@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screen_recording/flutter_screen_recording.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:open_file/open_file.dart';
 import 'package:quiver/async.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() => runApp(MyApp());
 
@@ -18,11 +18,11 @@ class _MyAppState extends State<MyApp> {
   int _time = 0;
 
   requestPermissions() async {
-    await PermissionHandler().requestPermissions([
-      PermissionGroup.storage,
-      PermissionGroup.photos,
-      PermissionGroup.microphone,
-    ]);
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.photos,
+      Permission.storage,
+      Permission.microphone,
+    ].request();
   }
 
   @override

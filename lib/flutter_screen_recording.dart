@@ -7,13 +7,13 @@ import 'package:flutter_foreground_plugin/flutter_foreground_plugin.dart';
 class FlutterScreenRecording {
   static const MethodChannel _channel = const MethodChannel('flutter_screen_recording');
 
-  static Future<bool> startRecordScreen(String name, {String titleNotification, String messageNotification}) async {
+  static Future<bool> startRecordScreen(String name, {required String titleNotification, required String messageNotification}) async {
     await _maybeStartFGS(titleNotification, messageNotification);
     final bool start = await _channel.invokeMethod('startRecordScreen', {"name": name, "audio": false});
     return start;
   }
 
-  static Future<bool> startRecordScreenAndAudio(String name, {String titleNotification, String messageNotification}) async {
+  static Future<bool> startRecordScreenAndAudio(String name, {required String titleNotification, required String messageNotification}) async {
     await _maybeStartFGS(titleNotification, messageNotification);
     final bool start = await _channel.invokeMethod('startRecordScreen', {"name": name, "audio": true});
     return start;
