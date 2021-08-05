@@ -9,6 +9,7 @@ import android.hardware.display.VirtualDisplay
 import android.media.MediaRecorder
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
+import android.os.Build
 import android.os.Environment
 import android.util.DisplayMetrics
 import android.util.Log
@@ -22,6 +23,7 @@ import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.io.File
 import java.io.IOException
+import java.util.*
 
 
 class FlutterScreenRecordingPlugin(
@@ -149,19 +151,17 @@ class FlutterScreenRecordingPlugin(
     }
 
     fun initMediaRecorder() {
-        mMediaRecorder?.setVideoSource(MediaRecorder.VideoSource.SURFACE)
-
-        //mMediaRecorder?.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-        mMediaRecorder?.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 
         if (recordAudio!!) {
             mMediaRecorder?.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
-            mMediaRecorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);//AAC //HE_AAC
+            mMediaRecorder?.setVideoSource(MediaRecorder.VideoSource.SURFACE)
+            mMediaRecorder?.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            mMediaRecorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AAC) //AAC //HE_AAC
             mMediaRecorder?.setAudioEncodingBitRate(16 * 44100);
             mMediaRecorder?.setAudioSamplingRate(44100);
         }
-
         mMediaRecorder?.setVideoEncoder(MediaRecorder.VideoEncoder.H264)
+        mMediaRecorder?.setVideoEncodingBitRate(5 * mDisplayWidth * mDisplayHeight)
 
         println(mDisplayWidth.toString() + " " + mDisplayHeight);
         mMediaRecorder?.setVideoSize(mDisplayWidth, mDisplayHeight)
@@ -171,7 +171,6 @@ class FlutterScreenRecordingPlugin(
 
         println("file --- " + "${storePath}${videoName}.mp4")
 
-        mMediaRecorder?.setVideoEncodingBitRate(5 * mDisplayWidth * mDisplayHeight)
         mMediaRecorder?.prepare()
     }
 
