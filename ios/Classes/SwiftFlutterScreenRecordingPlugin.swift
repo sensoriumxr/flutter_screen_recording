@@ -86,11 +86,14 @@ var myResult: FlutterResult?
             self.videoWriter?.add(videoWriterInput!);
                         
             if(recordAudio){
+                try! AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .videoRecording)
+                try! AVAudioSession.sharedInstance().setActive(true)
                 let audioOutputSettings: [String : Any] = [
                     AVNumberOfChannelsKey : 2,
                     AVFormatIDKey : kAudioFormatMPEG4AAC,
                     AVSampleRateKey: 44100,
                     AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+
                 ]
                 //Create the asset writer input object which is actually used to write out the audio
                 self.audioInput = AVAssetWriterInput(mediaType: AVMediaType.audio, outputSettings: audioOutputSettings)
